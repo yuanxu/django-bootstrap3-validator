@@ -61,6 +61,7 @@
                     <td>8</td>
                     <td><a href="/validators/date/">date</a></td>
                     <td>Validate date</td>
+                    <td>Supported. </td>
                 </tr>
                 
                 <tr>
@@ -215,6 +216,7 @@
                     <td>33</td>
                     <td><a href="/validators/numeric/">numeric</a></td>
                     <td>Check if the value is numeric</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
