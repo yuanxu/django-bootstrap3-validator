@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load bootstrap_validator bootstrap3 %}
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.2.0/css/bootstrap.min.css"/>
+
+    <!-- Include FontAwesome CSS if you want to use feedback icons provided by FontAwesome -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.1.0/css/font-awesome.min.css"/>
+
+    <!-- BootstrapValidator CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css"/>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <!-- BootstrapValidator JS -->
+    <script type="text/javascript"
+            src="//cdn.jsdelivr.net/jquery.bootstrapvalidator/0.5.0/js/bootstrapValidator.min.js"></script>
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h1>Django BootstrapValidator Form </h1>
+        <br>
+        <fieldset>
+            <legend>Horizontal</legend>
+
+            <form method="post" id="id_form" class="form form-horizontal">
+                {% csrf_token %}
+                {% bootstrap_form form layout="horizontal" %}
+                <div class="form-group">
+                    <label class="col-md-2 control-label"></label>
+
+                    <div class=" col-md-4">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+<script>
+    {% validator '#id_form' form icon="bootstrap" %}
+</script>
+</body>
+</html>
