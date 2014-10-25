@@ -1,9 +1,11 @@
 # coding=utf-8
 import json
+
 from django import template
-from django.contrib.staticfiles import utils
+from django.forms import forms
+from django.forms import fields
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
-from django.forms.forms import BoundField
+
 
 register = template.Library()
 
@@ -64,10 +66,12 @@ def render_field(field):
      :type field: django.forms.Field
     :return:
     """
-    field = field.field if isinstance(field, BoundField) else field
+    field = field.field if isinstance(field, forms.BoundField) else field
+    widget = field.widget
     validators = {}
     if field.required:
         validators['notEmpty'] = {'message': "This field is required."}
+    validator_codes = [item.code for item in field.validators]
     for v in field.validators:
         if isinstance(v, MinLengthValidator):
             vc = validators.get('stringLength', {})
@@ -76,11 +80,21 @@ def render_field(field):
         elif isinstance(v, MaxLengthValidator):
             vc['max'] = field.max_length
             validators.update({'stringLength': vc})
-        elif isinstance(v, MinValueValidator):
-            vc = validators.get('between', {})
-            vc['min'] = field.min_value
-            validators.update({'between': vc})
+        elif isinstance(v, (MinValueValidator, MaxValueValidator)):
+            if 'min_value' in validator_codes and 'max_value' in validator_codes:
+                vc = validators.get('between', {})
+                if v.code == 'min_value':
+                    vc['min'] = field.min_value
+                else:
+                    vc['max'] = field.max_value
+                validators.update({'between': vc})
+            elif v.code == 'min_value':
+                validators['greaterThan'] = field.min_value
+            elif v.code == 'max_value':
+                validators['lessThan'] = field.max_value
         elif isinstance(v, MaxValueValidator):
-            vc['max'] = field.max_value
+
             validators.update({'between': vc})
+    if isinstance(field, fields.IntegerField):
+        validators['integer'] = {}
     return {'validators': validators}
