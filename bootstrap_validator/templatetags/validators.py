@@ -171,7 +171,7 @@ class ChoicesValidator(BaseBV):
         return {self.code: {'min': self.min, 'max': self.max}}
 
 
-class CallBackValidatgor(BaseBV):
+class CallBackValidator(BaseBV):
     """
     Return the validity from a callback method
 
