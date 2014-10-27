@@ -245,3 +245,52 @@ class UriValidator(BaseBV):
     def get_validator_code(self):
         return {self.code: {'allowLocal': str(self.allowLocal).lower(),
                             'protocol': self.protocol}}
+
+
+class FileValidator(BaseBV):
+    """
+    Validate file
+
+    :Warn The maxSize and type are only used if the browser supports HTML 5 File API.
+
+    http://bootstrapvalidator.com/validators/file/
+    """
+    code = 'file'
+
+    def __init__(self, extension, type=None, minSize=None, maxSize=None):
+        self.extension = extension
+        self.type = type
+        self.minSize = minSize
+        self.maxSize = maxSize
+
+    def get_validator_code(self):
+        vc = {'extension': self.extension}
+        if self.type:
+            vc['type'] = self.type
+        if self.minSize:
+            vc['minSize'] = self.minSize
+        if self.maxSize:
+            vc['maxSize'] = self.maxSize
+
+        return {self.code: vc}
+
+
+class ImageFileValidator(FileValidator):
+    def __init__(self, minSize=None, maxSize=None):
+        super(ImageFileValidator, self).__init__('jpg,jpeg,png,bmp,gif,webp,ico,jnp',
+                                                 'image/jpeg,image/png,images/gif,images/x-icon,images/x-ms-bmp,images/webp,images/x-jnp',
+                                                 minSize, maxSize)
+
+
+class VideoFileValidator(FileValidator):
+    def __init__(self, minSize=None, maxSize=None):
+        super(VideoFileValidator, self).__init__('mp4,3gp,3gpp,megp,mgp,mov,webm,flv,m4v,wmv,avi,',
+                                                 'video/mp4,video/3gpp,video/mpeg,video/quicktime,video/x-flv,video/x-m4v,video/x-ms-wmv,video/x-msvideo,video/webm',
+                                                 minSize, maxSize)
+
+
+class AudioFileValidator(FileValidator):
+    def __init__(self, minSize=None, maxSize=None):
+        super(AudioFileValidator, self).__init__('mid,midi,kar,mp3,ogg,m4a,ra',
+                                                 'audio/midi,audio/mpeg,audio/ogg,audio/x-m4a,audio/x-realaudio')
+
