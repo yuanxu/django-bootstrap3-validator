@@ -5,6 +5,7 @@ from django import template
 from django.forms import forms
 from django.forms import fields
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
+from .validators import *
 
 from .utils import convert_datetime_python_to_javascript
 
@@ -100,6 +101,8 @@ def render_field(field):
                 validators['lessThan'] = {'value': field.max_value}
         elif isinstance(v, MaxValueValidator):
             validators.update({'between': vc})
+        elif isinstance(v, BaseBV):
+            validators.update(v.get_validator_code())
 
     if isinstance(field, (fields.DecimalField, fields.FloatField)) and no_compare_validator():
         validators['numeric'] = {}

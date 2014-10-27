@@ -18,6 +18,7 @@
                     <td>1</td>
                     <td><a href="/validators/base64/">base64</a></td>
                     <td>Validate a base64 encoded string</td>
+                    <td>Not support</td>
                 </tr>
                 
                 <tr>
@@ -31,12 +32,14 @@
                     <td>3</td>
                     <td><a href="/validators/callback/">callback</a></td>
                     <td>Return the validity from a callback method</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
                     <td>4</td>
                     <td><a href="/validators/choice/">choice</a></td>
                     <td>Check if the number of checked boxes are less or more than a given number</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
@@ -68,6 +71,7 @@
                     <td>9</td>
                     <td><a href="/validators/different/">different</a></td>
                     <td>Return true if the input value is different with given field's value</td>
+                    <td>Supported. </td>
                 </tr>
                 
                 <tr>
@@ -129,12 +133,14 @@
                     <td>19</td>
                     <td><a href="/validators/id/">id</a></td>
                     <td>Validate identification number</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
                     <td>20</td>
                     <td><a href="/validators/identical/">identical</a></td>
                     <td>Check if the value is the same as one of particular field</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
@@ -235,6 +241,7 @@
                     <td>36</td>
                     <td><a href="/validators/remote/">remote</a></td>
                     <td>Perform remote checking via Ajax request</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
@@ -308,6 +315,7 @@
                     <td>48</td>
                     <td><a href="/validators/zipCode/">zipCode</a></td>
                     <td>Validate a zip code</td>
+                    <td>Supported</td>
                 </tr>
                 
             </tbody>
