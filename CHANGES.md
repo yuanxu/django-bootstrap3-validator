@@ -1,0 +1,20 @@
+## 0.1
+supported validators:
+
+* between
+* callback
+* choices
+* date
+* different
+* emailAddress
+* greaterThan
+* id
+* integer
+* lessThan
+* notEmpty
+* numeric
+* phone
+* remote
+* stringLength
+* uri
+* zipCode
