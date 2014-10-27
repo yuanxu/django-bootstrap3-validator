@@ -19,3 +19,5 @@ class TestForm(forms.Form):
     password2 = forms.CharField(validators=[IdenticalValidator('password')], widget=forms.PasswordInput)
 
     remote = forms.CharField(validators=[RemoteValidator('remote_valid', name='to_valid')])
+
+    uri=forms.CharField(validators=[UriValidator()])

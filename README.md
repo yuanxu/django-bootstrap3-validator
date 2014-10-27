@@ -90,6 +90,7 @@
                     <td>12</td>
                     <td><a href="/validators/emailAddress/">emailAddress</a></td>
                     <td>Validate an email address</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
@@ -229,6 +230,7 @@
                     <td>34</td>
                     <td><a href="/validators/phone/">phone</a></td>
                     <td>Validate a phone number</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>
@@ -291,6 +293,7 @@
                     <td>44</td>
                     <td><a href="/validators/uri/">uri</a></td>
                     <td>Validate an URL address</td>
+                    <td>Supported</td>
                 </tr>
                 
                 <tr>

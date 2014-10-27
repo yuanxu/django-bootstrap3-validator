@@ -7,6 +7,9 @@ class BaseBV(object):
     code = ''
 
     def __call__(self, value):
+        # value = force_text(value)
+        # TODO: support server side validation
+        warn("Bootstrap_Validator.%s not support server side validation now." % self.code)
         return
 
     def get_validator_code(self):
@@ -58,18 +61,12 @@ class IdValidator(BaseBV):
     def get_validator_code(self):
         return {self.code: {'country': self.country}}
 
-    def __call__(self, value):
-        # value = force_text(value)
-        # TODO: support server side validation
-        warn("Bootstrap_Validator.Id not support server side validation now.")
-        return
-
 
 class ZipCodeValidator(BaseBV):
     """
     :param country: 可以是国家代码，或者是另外一个控件名字的引用
     """
-    code = 'zip_code'
+    code = 'zipZode'
     COUNTRIES = {
         'BR': 'Brazil',
         'CA': 'Canada',
@@ -174,7 +171,7 @@ class ChoicesValidator(BaseBV):
         return {self.code: {'min': self.min, 'max': self.max}}
 
 
-class CallBack(BaseBV):
+class CallBackValidatgor(BaseBV):
     """
     Return the validity from a callback method
 
@@ -192,3 +189,59 @@ class CallBack(BaseBV):
 
     def get_validator_code(self):
         return {self.callback: {'callback': self.callback}}
+
+
+class PhoneValidator(BaseBV):
+    """
+    Validate a phone number
+
+    http://bootstrapvalidator.com/validators/phone/
+    """
+    code = 'phone'
+    COUNTRIES = {
+        'BR': 'Brazil',
+        'CN': 'China',
+        'CZ': 'Czech Republic',
+        'DK': 'Denmark',
+        'ES': 'Spain',
+        'FR': 'France',
+        'GB': 'United Kingdom',
+        'MA': 'Morocco',
+        'PK': 'Pakistan',
+        'RO': 'Romania',
+        'RU': 'Russia',
+        'SK': 'Slovakia',
+        'TH': 'Thailand',
+        'US': 'USA',
+        'VE': 'Venezuela'
+    }
+
+    def __init__(self, country):
+        self.country = country
+
+    def get_validator_code(self):
+        return {self.code: {'country': self.country}}
+
+
+class EmailAddressValidator(BaseBV):
+    code = 'emailAddress'
+
+    def __init__(self, multiple=False, separator='/[,;]/'):
+        self.multiple = multiple
+        self.separator = separator
+
+    def get_validator_code(self):
+        return {self.code: {'multiple': str(self.multiple).lower(),
+                            'separator': self.separator}}
+
+
+class UriValidator(BaseBV):
+    code = 'uri'
+
+    def __init__(self, allowLocal=False, protocol='http,https,ftp'):
+        self.allowLocal = allowLocal
+        self.protocol = protocol
+
+    def get_validator_code(self):
+        return {self.code: {'allowLocal': str(self.allowLocal).lower(),
+                            'protocol': self.protocol}}
