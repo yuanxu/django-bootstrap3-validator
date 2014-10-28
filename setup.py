@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='Django-Bootstrap3-Validator',
-    version='0.1.0',
+    version='0.2.0',
     author='Xu Yuan',
     author_email='ankh2008@gmail.com',
     packages=['bootstrap_validator', 'bootstrap_validator.templatetags', 'demo', 'demo.demo'],
