@@ -221,30 +221,30 @@ class PhoneValidator(BaseBV):
 
     def get_validator_code(self):
         return {self.code: {'country': self.country}}
-
-
-class EmailAddressValidator(BaseBV):
-    code = 'emailAddress'
-
-    def __init__(self, multiple=False, separator='/[,;]/'):
-        self.multiple = multiple
-        self.separator = separator
-
-    def get_validator_code(self):
-        return {self.code: {'multiple': str(self.multiple).lower(),
-                            'separator': self.separator}}
-
-
-class UriValidator(BaseBV):
-    code = 'uri'
-
-    def __init__(self, allowLocal=False, protocol='http,https,ftp'):
-        self.allowLocal = allowLocal
-        self.protocol = protocol
-
-    def get_validator_code(self):
-        return {self.code: {'allowLocal': str(self.allowLocal).lower(),
-                            'protocol': self.protocol}}
+#
+#
+# class EmailAddressValidator(BaseBV):
+#     code = 'emailAddress'
+#
+#     def __init__(self, multiple=False, separator='/[,;]/'):
+#         self.multiple = multiple
+#         self.separator = separator
+#
+#     def get_validator_code(self):
+#         return {self.code: {'multiple': str(self.multiple).lower(),
+#                             'separator': self.separator}}
+#
+#
+# class UriValidator(BaseBV):
+#     code = 'uri'
+#
+#     def __init__(self, allowLocal=False, protocol='http,https,ftp'):
+#         self.allowLocal = allowLocal
+#         self.protocol = protocol
+#
+#     def get_validator_code(self):
+#         return {self.code: {'allowLocal': str(self.allowLocal).lower(),
+#                             'protocol': self.protocol}}
 
 
 class FileValidator(BaseBV):

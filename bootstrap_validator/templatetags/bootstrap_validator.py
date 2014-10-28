@@ -115,4 +115,11 @@ def render_field(field):
     elif isinstance(field, fields.TimeField):
         validators['regexp'] = {'regexp': '^((([0-1]?[0-9])|([2][0-3])):)(([0-5][0-9]):)([0-5][0-9])$',
                                 'message': 'Please enter a valid date'}
+    elif isinstance(field, fields.URLField):
+        validators['uri'] = {}
+    elif isinstance(field, fields.EmailField):
+        validators['emailAddress'] = {}
+    elif isinstance(field, fields.ImageField):
+        if 'file' not in validators:
+            validators.update(ImageFileValidator().get_validator_code())
     return {'validators': validators}
