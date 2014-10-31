@@ -18,3 +18,9 @@ supported validators:
 * stringLength
 * uri
 * zipCode
+
+## 0.2 
+
+* adjust some validator's implements
+* fix stringLength error
+* validator tag add requirejs argument, default is False.

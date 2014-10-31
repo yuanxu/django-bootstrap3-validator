@@ -5,6 +5,7 @@ from django import template
 from django.forms import forms
 from django.forms import fields
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
+from django.utils.safestring import mark_safe
 from .validators import *
 
 from .utils import convert_datetime_python_to_javascript
@@ -30,9 +31,23 @@ def validator_css_url():
 
 
 @register.simple_tag
-def validator(selector, form, *args, **kwargs):
-    container = kwargs.pop('container', 'tooltip')
+def validator(selector, form, requirejs=False, *args, **kwargs):
+    """
+
+    :param selector:
+    :type selector: str
+    :param form:
+     :type form: django.forms.Form
+    :param requirejs:
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    if not selector.startswith(u'.') and not selector.startswith('#'):
+        selector = '#' + selector
+    container = kwargs.pop('container', '')
     icon = kwargs.pop('icon', None)
+
     validators = {}
     for field in form:
         validators[field.name] = render_field(field)
@@ -59,7 +74,11 @@ def validator(selector, form, *args, **kwargs):
                      u"} \r\n")
     else:
         icon_code = 'null'
-    return code.format(selector=selector, container=container, icon=icon_code, fields=json.dumps(validators, indent=4))
+    vld_code = code.format(selector=selector, container=container, icon=icon_code,
+                           fields=json.dumps(validators, indent=4))
+    if requirejs:
+        vld_code = u'requirejs(["jquery","bootstrapValidator"],function(){{ {} }})'.format(vld_code)
+    return mark_safe(vld_code)
 
 
 def render_field(field):
@@ -85,6 +104,7 @@ def render_field(field):
             vc['min'] = field.min_length
             validators.update({'stringLength': vc})
         elif isinstance(v, MaxLengthValidator):
+            vc = validators.get('stringLength', {})
             vc['max'] = field.max_length
             validators.update({'stringLength': vc})
         elif isinstance(v, (MinValueValidator, MaxValueValidator)):
@@ -99,8 +119,6 @@ def render_field(field):
                 validators['greaterThan'] = {'value': field.min_value}
             elif v.code == 'max_value':
                 validators['lessThan'] = {'value': field.max_value}
-        elif isinstance(v, MaxValueValidator):
-            validators.update({'between': vc})
         elif isinstance(v, BaseBV):
             validators.update(v.get_validator_code())
 
