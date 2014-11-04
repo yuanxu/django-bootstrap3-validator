@@ -1,4 +1,4 @@
 
-include README.md CHANGES.md setup.py
+include README.md CHANGES.md setup.py support_validators.md
 recursive-include bootstrap_validator\static *
 recursive-include demo\demo\templates *
