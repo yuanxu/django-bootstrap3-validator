@@ -2,6 +2,7 @@
 import json
 
 from django import template
+from django.conf import settings
 from django.forms import forms
 from django.forms import fields
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
@@ -54,7 +55,7 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
     code = (u"$(document).ready(function() {{ \r\n"
             u"      $('{selector}').bootstrapValidator({{  \r\n"
             u"          container:'{container}',  \r\n"
-            u"          message: 'This value is not valid',  \r\n"
+            u"          excluded:[':disabled'],"
             u"          feedbackIcons: {icon},  \r\n"
             u"          fields:{fields} \r\n"
             u"      }}) \r\n"
@@ -72,12 +73,20 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
                      u"invalid: 'fa fa-times', \r\n"
                      u"validating: 'fa fa-refresh' \r\n"
                      u"} \r\n")
+    elif icon:
+        icon_code = icon
     else:
         icon_code = 'null'
     vld_code = code.format(selector=selector, container=container, icon=icon_code,
                            fields=json.dumps(validators, indent=4))
     if requirejs:
-        vld_code = u'requirejs(["jquery","bootstrapValidator"],function(){{ {} }})'.format(vld_code)
+        prefix = getattr(settings, 'BOOTSTRAP_VALIDATOR_PREFIX', '')  # 相较于requirejs的baseUri的路径
+        prefix = prefix + '/' if prefix else ''
+        depends = '"jquery","{}bootstrapValidator"'.format(prefix)
+        if 'language' in kwargs:
+            depends = '{},"{}language/{}"'.format(depends, prefix, kwargs['language'])
+        vld_code = u'requirejs([{}],function(){{ {} }})'.format(depends, vld_code)
+
     return mark_safe(vld_code)
 
 
@@ -96,7 +105,7 @@ def render_field(field):
         return not ('lessThan' in validators or 'greaterThan' in validators or 'between' in validators)
 
     if field.required:
-        validators['notEmpty'] = {'message': "This field is required."}
+        validators['notEmpty'] = {}
     validator_codes = [item.code for item in field.validators]
     for v in field.validators:
         if isinstance(v, MinLengthValidator):
@@ -132,7 +141,7 @@ def render_field(field):
             validators['date'] = {'format': convert_datetime_python_to_javascript(formats[0])}
     elif isinstance(field, fields.TimeField):
         validators['regexp'] = {'regexp': '^((([0-1]?[0-9])|([2][0-3])):)(([0-5][0-9]):)([0-5][0-9])$',
-                                'message': 'Please enter a valid date'}
+                                }
     elif isinstance(field, fields.URLField):
         validators['uri'] = {}
     elif isinstance(field, fields.EmailField):

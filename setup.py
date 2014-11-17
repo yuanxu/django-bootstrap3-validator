@@ -4,7 +4,7 @@ import os
 base_dir = os.path.dirname(__file__)
 setup(
     name='Django-Bootstrap3-Validator',
-    version='0.2.1',
+    version='0.2.2',
     author='Xu Yuan',
     author_email='ankh2008@gmail.com',
     packages=['bootstrap_validator', 'bootstrap_validator.templatetags', 'demo', 'demo.demo'],

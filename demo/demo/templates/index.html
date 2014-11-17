@@ -17,6 +17,7 @@
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
     <!-- BootstrapValidator JS -->
+    <script src="http://cdn.staticfile.org/require.js/2.1.15/require.min.js"></script>
     <script type="text/javascript"
             src="//cdn.jsdelivr.net/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator.min.js"></script>
     <title></title>
@@ -29,7 +30,7 @@
         <fieldset>
             <legend>Horizontal</legend>
 
-            <form method="post" id="id_form" class="form form-horizontal">
+            <form method="post" id="id_form" class="form form-horizontal" novalidate>
                 {% csrf_token %}
                 {% bootstrap_form form layout="horizontal" %}
                 <div class="form-group">
@@ -44,7 +45,14 @@
     </div>
 </div>
 <script>
-    {% validator '#id_form' form icon="bootstrap" %}
+    requirejs.config({
+        baseUrl:'static/js',
+        paths: {
+            'jquery': 'http://cdn.staticfile.org/jquery/1.11.1/jquery.min',
+            //'bootstrapValidator': '//cdn.jsdelivr.net/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator'
+        }
+    });
+    {% validator '#id_form' form icon="bootstrap" requirejs=True language='zh_CN'%}
 </script>
 </body>
 </html>
