@@ -7,8 +7,8 @@ from django.forms import forms
 from django.forms import fields
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
 from django.utils.safestring import mark_safe
-from .validators import *
 
+from ..validators import *
 from .utils import convert_datetime_python_to_javascript
 
 
@@ -55,7 +55,7 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
     code = (u"$(document).ready(function() {{ \r\n"
             u"      $('{selector}').bootstrapValidator({{  \r\n"
             u"          container:'{container}',  \r\n"
-            u"          excluded:[':disabled'],"
+            #u"          excluded:[':disabled'],"
             u"          feedbackIcons: {icon},  \r\n"
             u"          fields:{fields} \r\n"
             u"      }}) \r\n"
@@ -72,6 +72,12 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
                      u"valid: 'fa fa-check', \r\n"
                      u"invalid: 'fa fa-times', \r\n"
                      u"validating: 'fa fa-refresh' \r\n"
+                     u"} \r\n")
+    elif icon == 'bootstrap2':
+        icon_code = (u" { \r\n"
+                     u"valid: 'icon-ok', \r\n"
+                     u"invalid: 'icon-remove', \r\n"
+                     u"validating: 'icon-refresh icon-spin' \r\n"
                      u"} \r\n")
     elif icon:
         icon_code = icon

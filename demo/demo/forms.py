@@ -1,6 +1,6 @@
 from django import forms
 
-from bootstrap_validator.templatetags.validators import *
+from bootstrap_validator.validators import *
 
 
 class TestForm(forms.Form):

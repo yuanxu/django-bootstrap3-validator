@@ -1,10 +1,12 @@
 # coding=utf-8
 from warnings import warn
-from django.shortcuts import resolve_url
+
+from django.utils.encoding import force_text
 
 
 class BaseBV(object):
     code = ''
+    message = None
 
     def __call__(self, value):
         # value = force_text(value)
@@ -14,6 +16,11 @@ class BaseBV(object):
 
     def get_validator_code(self):
         return {}
+
+    def _patch_message(self, context):
+        if self.message:
+            context['message'] = self.message
+        return context
 
 
 class IdValidator(BaseBV):
@@ -50,16 +57,17 @@ class IdValidator(BaseBV):
                  'TH': 'Thailand',
                  'ZA': 'South Africa'}
 
-    def __init__(self, country):
+    def __init__(self, country, message=None):
         """
 
         :param country: 可以是国家代码，或者是另外一个控件名字的引用
         :return:
         """
         self.country = country
+        self.message = message
 
     def get_validator_code(self):
-        return {self.code: {'country': self.country}}
+        return {self.code: self._patch_message({'country': self.country})}
 
 
 class ZipCodeValidator(BaseBV):
@@ -84,8 +92,9 @@ class ZipCodeValidator(BaseBV):
         'US': 'USA'
     }
 
-    def __init__(self, country):
+    def __init__(self, country, message=None):
         self.country = country
+        self.message = message
 
     def __call__(self, value):
         # value = force_text(value)
@@ -94,7 +103,7 @@ class ZipCodeValidator(BaseBV):
         return
 
     def get_validator_code(self):
-        return {self.code: {'country': self.country}}
+        return {self.code: self._patch_message({'country': self.country})}
 
 
 class IdenticalValidator(BaseBV):
@@ -105,14 +114,15 @@ class IdenticalValidator(BaseBV):
     """
     code = 'identical'
 
-    def __init__(self, field):
+    def __init__(self, field, message=None):
         self.field = field
+        self.message = message
 
     def get_validator_code(self):
-        return {self.code: {'field': self.field}}
+        return {self.code: self._patch_message({'field': self.field})}
 
 
-class DifferentValidator(object):
+class DifferentValidator(BaseBV):
     """
     Return true if the input value is different with given field's value
 
@@ -120,11 +130,12 @@ class DifferentValidator(object):
     """
     code = 'different'
 
-    def __init__(self, field):
+    def __init__(self, field, message=None):
         self.field = field
+        self.message = message
 
     def get_validator_code(self):
-        return {self.code: {'field': self.field}}
+        return {self.code: self._patch_message({'field': self.field})}
 
 
 class RemoteValidator(BaseBV):
@@ -136,15 +147,16 @@ class RemoteValidator(BaseBV):
 
     code = 'remote'
 
-    def __init__(self, url, type='GET', name=None, data=None, delay=None):
+    def __init__(self, url, type='GET', name=None, data=None, delay=None, message=None):
         self.url = url
         self.type = type
         self.name = name
         self.data = data
         self.delay = delay
+        self.message = message
 
     def get_validator_code(self):
-        vc = {'url': resolve_url(self.url),
+        vc = {'url': force_text(self.url),  # url maybe lazy,
               'type': self.type}
         if self.name:
             vc['name'] = self.name
@@ -152,7 +164,9 @@ class RemoteValidator(BaseBV):
             vc['data'] = self.data
         if self.delay:
             vc['delay'] = self.delay
-        return {'remote': vc}
+        else:
+            vc['delay'] = 300
+        return {'remote': self._patch_message(vc)}
 
 
 class ChoicesValidator(BaseBV):
@@ -163,12 +177,13 @@ class ChoicesValidator(BaseBV):
     """
     code = 'choices'
 
-    def __init__(self, _min, _max):
+    def __init__(self, _min, _max, message=None):
         self.min = _min
         self.max = _max
+        self.message = message
 
     def get_validator_code(self):
-        return {self.code: {'min': self.min, 'max': self.max}}
+        return {self.code: self._patch_message({'min': self.min, 'max': self.max})}
 
 
 class CallBackValidator(BaseBV):
@@ -179,16 +194,17 @@ class CallBackValidator(BaseBV):
     """
     code = 'callback'
 
-    def __init__(self, callback):
+    def __init__(self, callback, message=None):
         """
 
         :param callback: the callback code or function name
         :return:
         """
         self.callback = callback
+        self.message = message
 
     def get_validator_code(self):
-        return {self.callback: {'callback': self.callback}}
+        return {self.callback: self._patch_message({'callback': self.callback})}
 
 
 class PhoneValidator(BaseBV):
@@ -216,35 +232,37 @@ class PhoneValidator(BaseBV):
         'VE': 'Venezuela'
     }
 
-    def __init__(self, country):
+    def __init__(self, country, message=None):
         self.country = country
 
     def get_validator_code(self):
-        return {self.code: {'country': self.country}}
+        return {self.code: self._patch_message({'country': self.country})}
 
 
 class EmailAddressValidator(BaseBV):
     code = 'emailAddress'
 
-    def __init__(self, multiple=False, separator='/[,;]/'):
+    def __init__(self, multiple=False, separator='/[,;]/', message=None):
         self.multiple = multiple
         self.separator = separator
+        self.message = message
 
     def get_validator_code(self):
-        return {self.code: {'multiple': str(self.multiple).lower(),
-                            'separator': self.separator}}
+        return {self.code: self._patch_message({'multiple': str(self.multiple).lower(),
+                                                'separator': self.separator})}
 
 
 class UriValidator(BaseBV):
     code = 'uri'
 
-    def __init__(self, allowLocal=False, protocol='http,https,ftp'):
+    def __init__(self, allowLocal=False, protocol='http,https,ftp', message=None):
         self.allowLocal = allowLocal
         self.protocol = protocol
+        self.message = message
 
     def get_validator_code(self):
-        return {self.code: {'allowLocal': str(self.allowLocal).lower(),
-                            'protocol': self.protocol}}
+        return {self.code: self._patch_message({'allowLocal': str(self.allowLocal).lower(),
+                                                'protocol': self.protocol})}
 
 
 class FileValidator(BaseBV):
@@ -257,11 +275,12 @@ class FileValidator(BaseBV):
     """
     code = 'file'
 
-    def __init__(self, extension, type=None, minSize=None, maxSize=None):
+    def __init__(self, extension, type=None, minSize=None, maxSize=None, message=None):
         self.extension = extension
         self.type = type
         self.minSize = minSize
         self.maxSize = maxSize
+        self.message = message
 
     def get_validator_code(self):
         vc = {'extension': self.extension}
@@ -272,7 +291,7 @@ class FileValidator(BaseBV):
         if self.maxSize:
             vc['maxSize'] = self.maxSize
 
-        return {self.code: vc}
+        return {self.code: self._patch_message(vc)}
 
 
 class ImageFileValidator(FileValidator):

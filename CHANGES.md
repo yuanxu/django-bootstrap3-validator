@@ -25,8 +25,9 @@ supported validators:
 * fix stringLength error
 * validator tag add requirejs argument, default is False.
 
-## 0.2.2
+## 0.3
 
 * update bootstrapValidator to 0.5.3
 * add language options
-# add validator_fields 
+* add validator_fields 
+* add message to validators
