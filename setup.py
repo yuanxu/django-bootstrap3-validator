@@ -12,7 +12,4 @@ setup(
     license='LICENSE.txt',
     description='BootstrapValidator support for Django projects',
     long_description=open(os.path.join(base_dir, 'README.md')).read(),
-    install_requires=[
-        "Django >= 1.0",
-    ],
 )

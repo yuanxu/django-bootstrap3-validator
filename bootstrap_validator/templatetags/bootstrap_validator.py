@@ -90,6 +90,14 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
     return mark_safe(vld_code)
 
 
+@register.simple_tag
+def validator_fields(form):
+    validators = {}
+    for field in form:
+        validators[field.name] = render_field(field)
+    return mark_safe(json.dumps(validators, indent=4))
+
+
 def render_field(field):
     """
     渲染字段验证代码
@@ -141,7 +149,7 @@ def render_field(field):
             validators['date'] = {'format': convert_datetime_python_to_javascript(formats[0])}
     elif isinstance(field, fields.TimeField):
         validators['regexp'] = {'regexp': '^((([0-1]?[0-9])|([2][0-3])):)(([0-5][0-9]):)([0-5][0-9])$',
-                                }
+        }
     elif isinstance(field, fields.URLField):
         validators['uri'] = {}
     elif isinstance(field, fields.EmailField):

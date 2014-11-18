@@ -29,3 +29,4 @@ supported validators:
 
 * update bootstrapValidator to 0.5.3
 * add language options
+# add validator_fields 
