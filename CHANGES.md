@@ -31,3 +31,4 @@ supported validators:
 * add language options
 * add validator_fields 
 * add message to validators
+* add validator_requirejs_config tag

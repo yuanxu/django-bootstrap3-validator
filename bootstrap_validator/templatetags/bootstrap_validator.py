@@ -23,12 +23,12 @@ def _get_static_url(path):
 
 @register.simple_tag
 def validator_javascript_url():
-    return _get_static_url('js/bootstrapValidator.min.js')
+    return _get_static_url('validator/js/bootstrapValidator.min.js')
 
 
 @register.simple_tag
 def validator_css_url():
-    return _get_static_url('css/bootstrapValidator.min.css')
+    return _get_static_url('validator/css/bootstrapValidator.min.css')
 
 
 @register.simple_tag
@@ -55,7 +55,6 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
     code = (u"$(document).ready(function() {{ \r\n"
             u"      $('{selector}').bootstrapValidator({{  \r\n"
             u"          container:'{container}',  \r\n"
-            #u"          excluded:[':disabled'],"
             u"          feedbackIcons: {icon},  \r\n"
             u"          fields:{fields} \r\n"
             u"      }}) \r\n"
@@ -86,11 +85,11 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
     vld_code = code.format(selector=selector, container=container, icon=icon_code,
                            fields=json.dumps(validators, indent=4))
     if requirejs:
-        prefix = getattr(settings, 'BOOTSTRAP_VALIDATOR_PREFIX', '')  # 相较于requirejs的baseUri的路径
+        prefix = getattr(settings, 'BOOTSTRAP_VALIDATOR_PREFIX', 'validator/js')  # 相较于requirejs的baseUri的路径
         prefix = prefix + '/' if prefix else ''
-        depends = '"jquery","{}bootstrapValidator"'.format(prefix)
+        depends = '"jquery","bootstrapValidator"'  # .format(prefix)
         if 'language' in kwargs:
-            depends = '{},"{}language/{}"'.format(depends, prefix, kwargs['language'])
+            depends = '{},"bootstrapValidator/language/{}"'.format(depends, kwargs['language'])
         vld_code = u'requirejs([{}],function(){{ {} }})'.format(depends, vld_code)
 
     return mark_safe(vld_code)
@@ -102,6 +101,31 @@ def validator_fields(form):
     for field in form:
         validators[field.name] = render_field(field)
     return mark_safe(json.dumps(validators, indent=4))
+
+
+@register.simple_tag
+def validator_requirejs_config(base_url=None, language=None):
+    config = ("requirejs.config({{"
+              "paths:{{"
+              "'bootstrapValidator':'{bv}/bootstrapValidator.min',"
+              "'bootstrapValidator/language/{lang}':'{bv}/language/{lang}',"
+              "}},"
+              "shim:{{"
+              "'bootstrapValidator':['jquery'],"
+              "'bootstrapValidator/language/{lang}':['bootstrapValidator']"
+              "}}"
+              "}});")
+    if base_url is None:
+        bv = getattr(settings, 'BOOTSTRAP_VALIDATOR_PREFIX', '')
+        if not bv:
+            bv = _get_static_url('validator/js')
+    else:
+        bv = base_url
+    if bv.endswith("/"):
+        bv = bv[:-1]
+    language = language if language else ''
+
+    return mark_safe(config.format(bv=bv, lang=language))
 
 
 def render_field(field):

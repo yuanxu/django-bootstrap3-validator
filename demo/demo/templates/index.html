@@ -48,11 +48,13 @@
     requirejs.config({
         baseUrl:'static/js',
         paths: {
-            'jquery': 'http://cdn.staticfile.org/jquery/1.11.1/jquery.min',
+            'jquery': 'http://cdn.staticfile.org/jquery/1.11.1/jquery.min'
             //'bootstrapValidator': '//cdn.jsdelivr.net/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator'
         }
     });
+    {% validator_requirejs_config language='zh_CN' %}
     {% validator '#id_form' form icon="bootstrap" requirejs=True language='zh_CN'%}
+{#    {% validator '#id_form' form icon="bootstrap" %}#}
 </script>
 </body>
 </html>

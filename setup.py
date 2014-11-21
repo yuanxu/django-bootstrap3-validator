@@ -4,10 +4,10 @@ import os
 base_dir = os.path.dirname(__file__)
 setup(
     name='Django-Bootstrap3-Validator',
-    version='0.2.2',
+    version='0.3',
     author='Xu Yuan',
     author_email='ankh2008@gmail.com',
-    packages=['bootstrap_validator', 'bootstrap_validator.templatetags', 'demo', 'demo.demo'],
+    packages=['bootstrap_validator', 'bootstrap_validator.templatetags','bootstrap_validator.migrations'],
     url="https://github.com/yuanxu/django-bootstrap3-validator",
     license='LICENSE.txt',
     description='BootstrapValidator support for Django projects',
