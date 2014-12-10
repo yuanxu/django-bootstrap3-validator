@@ -41,7 +41,7 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
      :type form: django.forms.Form
     :param requirejs:
     :param args:
-    :param kwargs:
+    :param kwargs:(language,config_requirejs)
     :return:
     """
     if not selector.startswith(u'.') and not selector.startswith('#'):
@@ -85,9 +85,7 @@ def validator(selector, form, requirejs=False, *args, **kwargs):
     vld_code = code.format(selector=selector, container=container, icon=icon_code,
                            fields=json.dumps(validators, indent=4))
     if requirejs:
-        prefix = getattr(settings, 'BOOTSTRAP_VALIDATOR_PREFIX', 'validator/js')  # 相较于requirejs的baseUri的路径
-        prefix = prefix + '/' if prefix else ''
-        depends = '"jquery","bootstrapValidator"'  # .format(prefix)
+        depends = '"jquery","bootstrapValidator"'
         if 'language' in kwargs:
             depends = '{},"bootstrapValidator/language/{}"'.format(depends, kwargs['language'])
         vld_code = u'requirejs([{}],function(){{ {} }})'.format(depends, vld_code)
@@ -136,7 +134,6 @@ def render_field(field):
     :return:
     """
     field = field.field if isinstance(field, forms.BoundField) else field
-    widget = field.widget
     validators = {}
 
     def no_compare_validator():
